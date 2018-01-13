@@ -11,7 +11,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.List;
 
-@Path("messages")
+@Path("/messages")
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class MessageResource {
@@ -31,16 +31,6 @@ public class MessageResource {
                 .build();
     }
 
-    @POST
-    public Response addMessage(Message message, @Context UriInfo uriInfo) {
-        Message newMessage = messageService.addMessage(message);
-        String newMessageId = String.valueOf(newMessage.getId());
-        URI uri = uriInfo.getAbsolutePathBuilder().path(newMessageId).build();
-        return Response.created(uri)
-                .entity(newMessage)
-                .build();
-    }
-
     private String getUriSelf(UriInfo uriInfo) {
         URI uri = uriInfo.getAbsolutePathBuilder().build();
         return uri.toString();
@@ -48,6 +38,7 @@ public class MessageResource {
 
     private String getUriProfile(UriInfo uriInfo, Message message) {
         URI uri = uriInfo.getBaseUriBuilder()
+                .path(ProfileResource.class)
                 .path(message.getAuthor())
                 .build();
         return uri.toString();
@@ -55,15 +46,34 @@ public class MessageResource {
 
     private String getUriComments(UriInfo uriInfo, Message message) {
         URI uri = uriInfo.getBaseUriBuilder()
+                .path(MessageResource.class)
                 .path(MessageResource.class, "getCommentResource")
                 .path(CommentResource.class)
                 .resolveTemplate("messageId", message.getId())
                 .build();
+//        URI uri = uriInfo.getAbsolutePathBuilder()
+//                .path("comments")
+//                .build();
         return uri.toString();
     }
 
+    @POST
+    public Response addMessage(Message message, @Context UriInfo uriInfo) {
+        Message newMessage = messageService.addMessage(message);
+        message.addLink(getUriSelf(uriInfo), "self");
+        message.addLink(getUriProfile(uriInfo, message), "profile");
+        message.addLink(getUriComments(uriInfo, message), "comments");
+
+        if (newMessage != null) {
+            return Response.status(Response.Status.CREATED)
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+    }
+
     @GET
-    @Path("{messageId}")
+    @Path("/{messageId}")
     public Response getMessageById(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
         Message message = messageService.getMessage(id);
         message.addLink(getUriSelf(uriInfo), "self");
@@ -74,7 +84,7 @@ public class MessageResource {
     }
 
     @PUT
-    @Path("{messageId}")
+    @Path("/{messageId}")
     public Response updateMessage(@PathParam("messageId") long id, Message message, @Context UriInfo uriInfo) {
         message.setId(id);
         Message updatedMessage = messageService.updateMessage(message);
@@ -86,16 +96,21 @@ public class MessageResource {
     }
 
     @DELETE
-    @Path("{messageId}")
+    @Path("/{messageId}")
     public Response deleteMessage(@PathParam("messageId") long id) {
-        messageService.removeMessage(id);
-        return Response.ok("Message with id = " + id + " removed")
-                .build();
+        Message deletedMessage = messageService.removeMessage(id);
+        if (deletedMessage != null) {
+            return Response.ok()
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .build();
+        }
     }
 
-    @GET
-    @Path("{messageId}/comments")
-    public CommentResource getCommentResource(@PathParam("messageId") long id) {
-        return new CommentResource();
-    }
+//    @GET
+//    @Path("/{messageId}/comments")
+//    public CommentResource getCommentResource(@PathParam("messageId") long messageId) {
+//        return new CommentResource();
+//    }
 }

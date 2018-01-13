@@ -18,6 +18,9 @@ public class Comment {
     private Date date;
 
     public Comment() {
+        /*
+         * Necessary for conversion with XML/JSON
+         */
     }
 
     public Comment(long id, long messageId, String author, String content) {
@@ -25,6 +28,7 @@ public class Comment {
         this.messageId = messageId;
         this.author = author;
         this.content = content;
+        this.date = new Date();
     }
 
     public long getId() {

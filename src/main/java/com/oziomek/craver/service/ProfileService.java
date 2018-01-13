@@ -3,6 +3,7 @@ package com.oziomek.craver.service;
 import com.oziomek.craver.persistence.database.DatabaseClass;
 import com.oziomek.craver.persistence.model.Profile;
 
+import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,11 @@ public class ProfileService {
     }
 
     public Profile getProfile(String profileName) {
-        return profiles.get(profileName);
+        Profile profile = profiles.get(profileName);
+        if (profile == null) {
+            throw new NotFoundException("Profile with name " + profileName + " not found");
+        }
+        return profile;
     }
 
     public Profile getProfileById(Long profileId) {
@@ -47,7 +52,7 @@ public class ProfileService {
     }
 
     public Profile updateProfile(Profile profile) {
-        if (profile.getId() <= 0) {
+        if (profile.getId() < 0) {
             return null;
         }
         if (profile.getDateCreated() == null) {
@@ -62,6 +67,7 @@ public class ProfileService {
             return null;
         }
         Profile profile = profiles.get(profileName);
+        profile.setId(profiles.size() + 1);
         /*
          * Update operation
          */

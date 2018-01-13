@@ -21,7 +21,5 @@ public class DatabaseClass {
         return profiles;
     }
 
-    public static Map<Long, Comment> getComments() {
-        return comments;
-    }
+    public static Map<Long, Comment> getComments() { return comments; }
 }

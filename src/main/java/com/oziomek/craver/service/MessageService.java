@@ -43,7 +43,7 @@ public class MessageService {
     }
 
     public Message updateMessage(Message message) {
-        if (message.getId() <= 0) {
+        if (message.getId() < 0) {
             return null;
         }
         if (message.getDate() == null) {

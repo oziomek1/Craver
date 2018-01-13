@@ -14,6 +14,7 @@ public class Message {
 	private String content;
     @XmlElement
 	private Date date;
+    @XmlElement(name = "links")
 	private List<Link> links = new ArrayList<>();
 
     public Message() {
