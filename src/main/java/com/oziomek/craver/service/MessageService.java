@@ -56,4 +56,14 @@ public class MessageService {
     public Message removeMessage(long id) {
         return messages.remove(id);
     }
+
+    public void increaseCommentCounter(long id) {
+        long counter = messages.get(id).getCommentsCounter();
+        messages.get(id).setCommentsCounter(++counter);
+    }
+
+    public void decreaseCommentCounter(long id) {
+        long counter = messages.get(id).getCommentsCounter();
+        messages.get(id).setCommentsCounter(--counter);
+    }
 }

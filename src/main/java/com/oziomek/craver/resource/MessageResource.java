@@ -1,6 +1,8 @@
 package com.oziomek.craver.resource;
 
 import com.oziomek.craver.persistence.model.Message;
+import com.oziomek.craver.persistence.model.Comment;
+import com.oziomek.craver.service.CommentService;
 import com.oziomek.craver.service.MessageService;
 
 import javax.ws.rs.*;
@@ -15,7 +17,9 @@ import java.util.List;
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class MessageResource {
+
     private MessageService messageService = new MessageService();
+    private CommentService commentService = new CommentService();
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -45,15 +49,9 @@ public class MessageResource {
     }
 
     private String getUriComments(UriInfo uriInfo, Message message) {
-        URI uri = uriInfo.getBaseUriBuilder()
-                .path(MessageResource.class)
-                .path(MessageResource.class, "getCommentResource")
-                .path(CommentResource.class)
-                .resolveTemplate("messageId", message.getId())
+        URI uri = uriInfo.getAbsolutePathBuilder()
+                .path("comments")
                 .build();
-//        URI uri = uriInfo.getAbsolutePathBuilder()
-//                .path("comments")
-//                .build();
         return uri.toString();
     }
 
@@ -108,9 +106,65 @@ public class MessageResource {
         }
     }
 
-//    @GET
-//    @Path("/{messageId}/comments")
-//    public CommentResource getCommentResource(@PathParam("messageId") long messageId) {
-//        return new CommentResource();
-//    }
+    @GET
+    @Path("/{messageId}/comments")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Comment> getXMLComments(@PathParam("messageId") long messageId) {
+        return commentService.getCommentsForMessage(messageId);
+    }
+
+    @GET
+    @Path("/{messageId}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getJSONComments(@PathParam("messageId") long messageId) {
+        List<Comment> comments = commentService.getCommentsForMessage(messageId);
+        return Response.ok(comments)
+                .build();
+    }
+
+    @POST
+    @Path("/{messageId}/comments")
+    public Response addComment(@PathParam("messageId") long messageId, Comment comment) {
+        Comment newComment = commentService.addComment(messageId, comment);
+        if (newComment != null) {
+            messageService.increaseCommentCounter(messageId);
+            return Response.status(Response.Status.CREATED)
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .build();
+        }
+    }
+
+
+    @GET
+    @Path("/{messageId}/comments/{commentId}")
+    public Response getComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
+        Comment comment = commentService.getCommentById(messageId, commentId);
+        return Response.ok(comment)
+                .build();
+    }
+
+    @PUT
+    @Path("/{messageId}/comments/{commentId}")
+    public Response updateComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId, Comment comment) {
+        comment.setId(commentId);
+        Comment updatedComment = commentService.updateComment(messageId, comment);
+        return Response.ok(updatedComment)
+                .build();
+    }
+
+    @DELETE
+    @Path("/{messageId}/comments/{commentId}")
+    public Response deleteComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
+        Comment deletedComment = commentService.removeComment(messageId, commentId);
+        if (deletedComment != null) {
+            messageService.decreaseCommentCounter(messageId);
+            return Response.ok()
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+    }
 }

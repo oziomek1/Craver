@@ -16,6 +16,10 @@ public class Message {
 	private Date date;
     @XmlElement(name = "links")
 	private List<Link> links = new ArrayList<>();
+    @XmlAttribute
+    private static long commentsCounter;
+    @XmlElement
+    private Map<Long, Comment> comments = new HashMap<>();
 
     public Message() {
         /*
@@ -60,6 +64,22 @@ public class Message {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Map<Long, Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Map<Long, Comment> comments) {
+        this.comments = comments;
+    }
+
+    public long getCommentsCounter() {
+        return commentsCounter;
+    }
+
+    public void setCommentsCounter(long commentsCounter) {
+        this.commentsCounter = commentsCounter;
     }
 
     public List<Link> getLinks() {

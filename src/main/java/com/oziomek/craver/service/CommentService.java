@@ -12,65 +12,52 @@ import java.util.Map;
 
 public class CommentService {
 
-    private Map<Long, Comment> comments = DatabaseClass.getComments();
     private Map<Long, Message> messages = DatabaseClass.getMessages();
 
 
-    public CommentService() {
-        comments.put(1L, new Comment(1, new MessageService().getMessage(1).getId(),
-                new ProfileService().getProfileById(1L).getProfileName(), "Hello"));
-        comments.put(2L, new Comment(2, new MessageService().getMessage(1).getId(),
-                new ProfileService().getProfileById(1L).getProfileName(), "Hello again"));
-    }
-
-    public List<Comment> getAllComments() {
-        return new ArrayList<Comment>(comments.values());
-    }
-
     public List<Comment> getCommentsForMessage(long messageId) {
+        Map<Long, Comment> comments = messages.get(messageId).getComments();
+        List<Comment> listOfComments = new ArrayList<>(comments.values());
+        return listOfComments;
+    }
+
+    public Comment getCommentById(long messageId, long commentId) {
         Message message = messages.get(messageId);
         if (message == null) {
-            throw new NotFoundException("Message " + messageId + " not found");
+            throw new NotFoundException("Message with id " + messageId + " not found");
         }
-        List<Comment> listOfCommentsForMessage = new ArrayList<>();
-        for(Comment comment : comments.values()) {
-            if (comment.getMessageId() == messageId) {
-                listOfCommentsForMessage.add(comment);
-            }
-        }
-        return listOfCommentsForMessage;
-    }
-
-    public Comment getCommentById(long commentId) {
+        Map<Long, Comment> comments = messages.get(messageId).getComments();
         Comment comment = comments.get(commentId);
         if (comment == null) {
             throw new NotFoundException("Comment with id " + commentId + " not found");
         }
-        return comment;
+        return comments.get(commentId);
     }
 
     public Comment addComment(long messageId, Comment comment) {
+        Map<Long, Comment> comments = messages.get(messageId).getComments();
         comment.setId(comments.size() + 1);
-        comment.setMessageId(messageId);
         if (comment.getDate() == null) {
             comment.setDate(new Date());
         }
-        comments.put(comment.getId(), comment);
+        messages.get(messageId).getComments().put(comment.getId(), comment);
         return comment;
     }
 
-    public Comment updateComment(Comment comment) {
-        if (comment.getId() < 0) {
+    public Comment updateComment(long messageId, Comment comment) {
+        Map<Long, Comment> comments = messages.get(messageId).getComments();
+        if (comment.getId() < 0 || messageId < 0) {
             return null;
         }
         if (comment.getDate() == null) {
             comment.setDate(new Date());
         }
-        comments.put(comment.getId(), comment);
+        messages.get(messageId).getComments().put(comment.getId(), comment);
         return comment;
     }
 
-    public Comment removeComment(long commentId) {
+    public Comment removeComment(long messageId, long commentId) {
+        Map<Long, Comment> comments = messages.get(messageId).getComments();
         return comments.remove(commentId);
     }
 
