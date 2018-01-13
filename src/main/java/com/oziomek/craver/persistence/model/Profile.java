@@ -1,5 +1,7 @@
 package com.oziomek.craver.persistence.model;
 
+import com.oziomek.craver.auth.UserRole;
+
 import javax.xml.bind.annotation.*;
 import java.util.Date;
 
@@ -16,16 +18,30 @@ public class Profile {
     private String lastName;
     @XmlElement
     private Date dateCreated;
-
+    private String password;
+    @XmlElement
+    private static String Role;
     public Profile() {
     }
 
-    public Profile(long id, String profileName, String firstName, String lastName) {
+    public Profile(long id, String profileName, String firstName, String lastName, String password) {
         this.id = id;
         this.profileName = profileName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateCreated = new Date();
+        this.password = password;
+        this.Role = UserRole.USER_ROLE;
+    }
+
+    public Profile(long id, String profileName, String firstName, String lastName, String password, String Role) {
+        this.id = id;
+        this.profileName = profileName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateCreated = new Date();
+        this.password = password;
+        this.Role = Role;
     }
 
     public long getId() {
@@ -67,4 +83,25 @@ public class Profile {
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public static String getRole() {
+        return Role;
+    }
+
+    public static void setRoleToAdmin() {
+        Role = UserRole.ADMIN_ROLE;
+    }
+
+    public static void setRoleToUser() {
+        Role = UserRole.USER_ROLE;
+    }
+
 }

@@ -1,8 +1,12 @@
 package com.oziomek.craver.resource;
 
+import com.oziomek.craver.persistence.model.Comment;
 import com.oziomek.craver.persistence.model.Message;
+import com.oziomek.craver.service.CommentService;
 import com.oziomek.craver.service.MessageService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -15,14 +19,18 @@ import java.util.List;
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class MessageResource {
-    private MessageService messageService = new MessageService();
 
+    private MessageService messageService = new MessageService();
+    private CommentService commentService = new CommentService();
+
+    @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public List<Message> getXMLMessages() {
         return messageService.getAllMessages();
     }
 
+    @PermitAll
     @GET
     @Produces(MediaType.APPLICATION_JSON)
         public Response getJSONMessages() {
@@ -45,18 +53,13 @@ public class MessageResource {
     }
 
     private String getUriComments(UriInfo uriInfo, Message message) {
-        URI uri = uriInfo.getBaseUriBuilder()
-                .path(MessageResource.class)
-                .path(MessageResource.class, "getCommentResource")
-                .path(CommentResource.class)
-                .resolveTemplate("messageId", message.getId())
+        URI uri = uriInfo.getAbsolutePathBuilder()
+                .path("comments")
                 .build();
-//        URI uri = uriInfo.getAbsolutePathBuilder()
-//                .path("comments")
-//                .build();
         return uri.toString();
     }
 
+    @RolesAllowed("USER")
     @POST
     public Response addMessage(Message message, @Context UriInfo uriInfo) {
         Message newMessage = messageService.addMessage(message);
@@ -72,6 +75,7 @@ public class MessageResource {
         }
     }
 
+    @PermitAll
     @GET
     @Path("/{messageId}")
     public Response getMessageById(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
@@ -83,6 +87,7 @@ public class MessageResource {
                 .build();
     }
 
+    @RolesAllowed("USER")
     @PUT
     @Path("/{messageId}")
     public Response updateMessage(@PathParam("messageId") long id, Message message, @Context UriInfo uriInfo) {
@@ -95,6 +100,7 @@ public class MessageResource {
                 .build();
     }
 
+    @RolesAllowed("USER")
     @DELETE
     @Path("/{messageId}")
     public Response deleteMessage(@PathParam("messageId") long id) {
@@ -108,9 +114,70 @@ public class MessageResource {
         }
     }
 
-//    @GET
-//    @Path("/{messageId}/comments")
-//    public CommentResource getCommentResource(@PathParam("messageId") long messageId) {
-//        return new CommentResource();
-//    }
+    @PermitAll
+    @GET
+    @Path("/{messageId}/comments")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Comment> getXMLComments(@PathParam("messageId") long messageId) {
+        return commentService.getCommentsForMessage(messageId);
+    }
+
+    @PermitAll
+    @GET
+    @Path("/{messageId}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getJSONComments(@PathParam("messageId") long messageId) {
+        List<Comment> comments = commentService.getCommentsForMessage(messageId);
+        return Response.ok(comments)
+                .build();
+    }
+
+    @RolesAllowed("USER")
+    @POST
+    @Path("/{messageId}/comments")
+    public Response addComment(@PathParam("messageId") long messageId, Comment comment) {
+        Comment newComment = commentService.addComment(messageId, comment);
+        if (newComment != null) {
+            messageService.increaseCommentCounter(messageId);
+            return Response.status(Response.Status.CREATED)
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .build();
+        }
+    }
+
+
+    @GET
+    @Path("/{messageId}/comments/{commentId}")
+    public Response getComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
+        Comment comment = commentService.getCommentById(messageId, commentId);
+        return Response.ok(comment)
+                .build();
+    }
+
+    @RolesAllowed("USER")
+    @PUT
+    @Path("/{messageId}/comments/{commentId}")
+    public Response updateComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId, Comment comment) {
+        comment.setId(commentId);
+        Comment updatedComment = commentService.updateComment(messageId, comment);
+        return Response.ok(updatedComment)
+                .build();
+    }
+
+    @RolesAllowed("USER")
+    @DELETE
+    @Path("/{messageId}/comments/{commentId}")
+    public Response deleteComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
+        Comment deletedComment = commentService.removeComment(messageId, commentId);
+        if (deletedComment != null) {
+            messageService.decreaseCommentCounter(messageId);
+            return Response.ok()
+                    .build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+    }
 }

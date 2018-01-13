@@ -1,5 +1,6 @@
 package com.oziomek.craver.service;
 
+import com.oziomek.craver.auth.UserRole;
 import com.oziomek.craver.persistence.database.DatabaseClass;
 import com.oziomek.craver.persistence.model.Profile;
 
@@ -17,8 +18,8 @@ public class ProfileService {
     private Map<String, Profile> profiles = DatabaseClass.getProfiles();
 
     public ProfileService() {
-        profiles.put("test", new Profile(1l,"test", "testName", "testSurname"));
-        profiles.put("johny123", new Profile(2l, "johny123", "Jan", "Kowalski"));
+        profiles.put("test", new Profile(1l,"test", "testName", "testSurname", "password", UserRole.GOD_ROLE));
+        profiles.put("johny123", new Profile(2l, "johny123", "Jan", "Kowalski", "password"));
     }
 
     public List<Profile> getAllProfiles() {
