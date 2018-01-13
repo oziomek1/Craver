@@ -3,6 +3,7 @@ package com.oziomek.craver.resource;
 import com.oziomek.craver.persistence.model.Profile;
 import com.oziomek.craver.service.ProfileService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -17,12 +18,14 @@ public class ProfileResource {
 
     private ProfileService profileService = new ProfileService();
 
+    @RolesAllowed("USER")
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public List<Profile> getXMLProfiles() {
         return profileService.getAllProfiles();
     }
 
+    @RolesAllowed("USER")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getJSONProfiles() {
@@ -31,6 +34,7 @@ public class ProfileResource {
                 .build();
     }
 
+    @RolesAllowed("ADMIN")
     @POST
     public Response addProfile(Profile profile, @Context UriInfo uriInfo) {
         Profile newProfile = profileService.addProfile(profile);
@@ -43,6 +47,7 @@ public class ProfileResource {
         }
     }
 
+    @RolesAllowed("USER")
     @GET
     @Path("/{profileName}")
     public Response getProfileByName(@PathParam("profileName") String profileName, @Context UriInfo uriInfo) {
@@ -51,6 +56,7 @@ public class ProfileResource {
                 .build();
     }
 
+    @RolesAllowed("ADMIN")
     @PUT
     @Path("/{profileName}")
     public Response updateProfile(@PathParam("profileName") String profileName, Profile profile) {
@@ -60,6 +66,7 @@ public class ProfileResource {
                 .build();
     }
 
+    @RolesAllowed("ADMIN")
     @DELETE
     @Path("/{profileName}")
     public  Response deleteProfile(@PathParam("profileName") String profileName) {
