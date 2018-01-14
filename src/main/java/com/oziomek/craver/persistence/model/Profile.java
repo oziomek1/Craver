@@ -92,16 +92,18 @@ public class Profile {
         this.password = password;
     }
 
-    public static String getRole() {
+    public String getRole() {
         return Role;
     }
 
-    public static void setRoleToAdmin() {
+    public void setRoleToAdmin(String Role) {
         Role = UserRole.ADMIN_ROLE;
+        this.Role = Role;
     }
 
-    public static void setRoleToUser() {
+    public void setRoleToUser(String Role) {
         Role = UserRole.USER_ROLE;
+        this.Role = Role;
     }
 
 }
