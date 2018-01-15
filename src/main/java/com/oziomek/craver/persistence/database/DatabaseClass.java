@@ -8,6 +8,9 @@ import java.util.Map;
 
 public class DatabaseClass {
 
+    /*
+     * TODO Change this class to real database
+     */
     private static Map<Long, Message> messages = new HashMap<>();
     private static Map<String, Profile> profiles = new HashMap<>();
 

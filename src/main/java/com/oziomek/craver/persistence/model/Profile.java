@@ -20,7 +20,7 @@ public class Profile {
     private Date dateCreated;
     private String password;
     @XmlElement
-    private static String Role;
+    private String Role;
     public Profile() {
     }
 

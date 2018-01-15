@@ -41,7 +41,9 @@ public class AuthenticationFilter implements ContainerRequestFilter{
         if (!method.isAnnotationPresent(PermitAll.class)) {
             //Denied for anyone
             if (method.isAnnotationPresent(DenyAll.class)) {
-                containerRequestContext.abortWith(ACCESS_FORBIDDEN);
+                containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("Access denies")
+                        .build());
                 return;
             }
 
@@ -72,7 +74,9 @@ public class AuthenticationFilter implements ContainerRequestFilter{
                 Set<String> rolesSet = new HashSet<>(Arrays.asList(rolesAllowed.value()));
 
                 if (!isUserAllowed(username, password, rolesSet)) {
-                    containerRequestContext.abortWith(ACCESS_DENIED);
+                    containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                            .entity("Access denies")
+                            .build());
                     return;
                 }
             }

@@ -17,7 +17,7 @@ public class Message {
     @XmlElement(name = "links")
 	private List<Link> links = new ArrayList<>();
     @XmlAttribute
-    private static long commentsCounter;
+    private long commentsCounter;
     @XmlElement
     private Map<Long, Comment> comments = new HashMap<>();
 
@@ -31,6 +31,14 @@ public class Message {
         this.id = id;
         this.author = author;
         this.content = content;
+        this.date = new Date();
+    }
+
+    public Message(long id, String author, String content, List<Link> links) {
+        this.id = id;
+        this.author = author;
+        this.content = content;
+        this.links = links;
         this.date = new Date();
     }
 
