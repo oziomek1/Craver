@@ -35,6 +35,9 @@ public class MessageResource {
         public Response getJSONMessages() {
         List<Message> messages = messageService.getAllMessages();
         return Response.ok(messages)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
                 .build();
     }
 
@@ -68,9 +71,16 @@ public class MessageResource {
 
         if (newMessage != null) {
             return Response.status(Response.Status.CREATED)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         } else {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
+                    .build();
         }
     }
 
@@ -83,6 +93,9 @@ public class MessageResource {
         message.addLink(getUriProfile(uriInfo, message), "profile");
         message.addLink(getUriComments(uriInfo, message), "comments");
         return Response.ok(message)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
                 .build();
     }
 
@@ -96,6 +109,9 @@ public class MessageResource {
         updatedMessage.addLink(getUriProfile(uriInfo, message), "profile");
         updatedMessage.addLink(getUriComments(uriInfo, message), "comments");
         return Response.ok(updatedMessage)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
                 .build();
     }
 
@@ -106,9 +122,15 @@ public class MessageResource {
         Message deletedMessage = messageService.removeMessage(id);
         if (deletedMessage != null) {
             return Response.ok()
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         } else {
             return Response.status(Response.Status.NOT_FOUND)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         }
     }
@@ -128,6 +150,9 @@ public class MessageResource {
     public Response getJSONComments(@PathParam("messageId") long messageId) {
         List<Comment> comments = commentService.getCommentsForMessage(messageId);
         return Response.ok(comments)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
                 .build();
     }
 
@@ -139,9 +164,15 @@ public class MessageResource {
         if (newComment != null) {
             messageService.increaseCommentCounter(messageId);
             return Response.status(Response.Status.CREATED)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         } else {
             return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         }
     }
@@ -152,6 +183,9 @@ public class MessageResource {
     public Response getComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
         Comment comment = commentService.getCommentById(messageId, commentId);
         return Response.ok(comment)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
                 .build();
     }
 
@@ -162,6 +196,9 @@ public class MessageResource {
         comment.setId(commentId);
         Comment updatedComment = commentService.updateComment(messageId, comment);
         return Response.ok(updatedComment)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
                 .build();
     }
 
@@ -173,9 +210,15 @@ public class MessageResource {
         if (deletedComment != null) {
             messageService.decreaseCommentCounter(messageId);
             return Response.ok()
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         } else {
             return Response.status(Response.Status.NOT_FOUND)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
                     .build();
         }
     }

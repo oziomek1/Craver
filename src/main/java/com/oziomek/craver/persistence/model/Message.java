@@ -34,6 +34,13 @@ public class Message {
         this.date = new Date();
     }
 
+    public Message(long id, String author, String content, Date date) {
+        this.id = id;
+        this.author = author;
+        this.content = content;
+        this.date = date;
+    }
+
     public Message(long id, String author, String content, List<Link> links) {
         this.id = id;
         this.author = author;
