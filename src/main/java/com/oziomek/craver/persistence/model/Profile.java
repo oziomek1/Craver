@@ -96,12 +96,12 @@ public class Profile {
         return Role;
     }
 
-    public void setRoleToAdmin(String Role) {
+    public void setRoleToAdmin() {
         Role = UserRole.ADMIN_ROLE;
         this.Role = Role;
     }
 
-    public void setRoleToUser(String Role) {
+    public void setRoleToUser() {
         Role = UserRole.USER_ROLE;
         this.Role = Role;
     }

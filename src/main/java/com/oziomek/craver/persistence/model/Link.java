@@ -2,6 +2,15 @@ package com.oziomek.craver.persistence.model;
 
 public class Link {
 
+    public Link() {
+
+    }
+
+    public Link(String link, String rel) {
+        this.link = link;
+        this.rel = rel;
+    }
+
     private String link;
     private String rel;
 

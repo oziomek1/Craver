@@ -49,6 +49,14 @@ public class Message {
         this.date = new Date();
     }
 
+    public Message(long id, String author, String content, Date date, List<Link> links) {
+        this.id = id;
+        this.author = author;
+        this.content = content;
+        this.links = links;
+        this.date = date;
+    }
+
     public long getId() {
         return id;
     }
@@ -97,22 +105,11 @@ public class Message {
         this.commentsCounter = commentsCounter;
     }
 
-    public List<Link> getLinks() {
-        return links;
-    }
+    public List<Link> getLinks() { return links; }
 
-    public void setLinks(List<Link> links) {
-        this.links = links;
-    }
+    public void setLinks(List<Link> links) { this.links = links; }
 
-    public void addLink(String url, String rel) {
-        Link link = new Link();
-        link.setLink(url);
-        link.setRel(rel);
-        links.add(link);
-    }
+    public void addLink(String url, String rel) { links.add(new Link(url, rel)); }
 
-    public void removeLinks() {
-        links.clear();
-    }
+    public void removeLinks() { links.clear(); }
 }
