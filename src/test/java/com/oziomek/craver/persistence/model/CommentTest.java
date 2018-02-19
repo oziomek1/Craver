@@ -1,9 +1,6 @@
 package com.oziomek.craver.persistence.model;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -41,6 +38,7 @@ class CommentTest {
     }
 
     @Test
+    @Tag("Essential")
     @DisplayName("Comment getters")
     void commentGetters() {
         // given

@@ -1,13 +1,11 @@
 package com.oziomek.craver.persistence.model;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProfileTest {
 
@@ -36,6 +34,7 @@ class ProfileTest {
     }
 
     @Test
+    @Tag("Essential")
     @DisplayName("Profile getters")
     void profileGetters() {
         // given

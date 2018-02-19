@@ -48,6 +48,7 @@ class MessageTest {
     }
 
     @Test
+    @Tag("Essential")
     @DisplayName("Message getters")
     void messageGetters() {
         // given
