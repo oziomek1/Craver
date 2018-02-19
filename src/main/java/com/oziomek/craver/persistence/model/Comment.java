@@ -31,6 +31,14 @@ public class Comment {
         this.date = new Date();
     }
 
+    public Comment(long id, long messageId, String author, String content, Date date) {
+        this.id = id;
+        this.messageId = messageId;
+        this.author = author;
+        this.content = content;
+        this.date = date;
+    }
+
     public long getId() {
         return id;
     }
